@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Show List</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #e6e6e6;
+  padding: 30px;
+}
+
+h1 {
+  font-size: 42px;
+  margin-bottom: 5px;
+ 
+;}
+
+h3 {
+  margin-top: 0;
+  font-weight: normal;
+}
+
+a {
+  color: rgb(178, 59, 207);
+}
+
+select {
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid rgb(179, 48, 212);
+  margin-left: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background-color: white;
+}
+
+th {
+  background-color: #58154d;
+  color: white;
+  padding: 10px;
+}
+
+td {
+  padding: 10px;
+  border: 1px solid #333;
+}
+
+#total {
+  margin-top: 15px;
+  font-weight: bold;
+}
+</style>
+
+<script>
+function filterTable() {
+  let signUps = JSON.parse(localStorage.getItem("signUps")) || [];
+
+  const selectedClub = document.getElementById("clubFilter").value;
+  const tbody = document.getElementById("tableBody");
+  const total = document.getElementById("total");
+
+  tbody.innerHTML = "";
+
+  let count = 0;
+
+  signUps.forEach(data => {
+    if (selectedClub === "All" || selectedClub === "" || data.club === selectedClub) {
+      count++;
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${data.club}</td>
+          <td>${data.idno}</td>
+          <td>${data.fName}</td>
+          <td>${data.gLevel}</td>
+          <td>${data.gmail}</td>
+          <td>${data.no}</td>
+          <td>${data.type}</td>
+        </tr>
+      `;
+    }
+  });
+
+  if (count === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align:center; font-weight:bold;">
+          No sign ups for ${selectedClub || "selected club"}
+        </td>
+      </tr>
+    `;
+  }
+
+  total.textContent = "Total Signup : " + count;
+}
+
+window.onload = filterTable;
+</script>
+
+</head>
+
+<body>
+
+<h1>Show List of Students Who Signed-Up</h1>
+<h3>by Kleo Foronda</h3>
+
+<a href="Q3_2GStrontiumForonda.html">Back to Sign Up</a>
+
+<br><br>
+
+<label>Select Your Club</label>
+<select id="clubFilter" onchange="filterTable()">
+  <option value="">-- select an option --</option>
+  <option value="Alianti">Alianti</option>
+  <option value="Labuyo">Labuyo</option>
+  <option value="Himig">Himig</option>
+  <option value="Palastro">Palastro</option>
+  <option value="Flux">Flux</option>
+</select>
+
+<div id="total"></div>
+
+<table>
+<thead>
+<tr>
+  <th>Club</th>
+  <th>ID</th>
+  <th>Fullname</th>
+  <th>Grade</th>
+  <th>Email</th>
+  <th>Mobile</th>
+  <th>Intern|Extern</th>
+</tr>
+</thead>
+
+<tbody id="tableBody"></tbody>
+</table>
+
+</body>
+</html> 

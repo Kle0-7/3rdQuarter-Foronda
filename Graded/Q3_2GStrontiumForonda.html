@@ -1,108 +1,150 @@
 <!DOCTYPE html>
 <html>
 <head>
- <script>
-    
-    function confirmSubmit() {
-      return confirm("Are you sure you want to submit this application?");}
 
-    function confirmReset() {
-      return confirm("Are you sure you want to reset the form?");}
+<script>
 
-     function checkEmpty(field) {
-    if (field.value.trim() === "") {
-      field.classList.add("invalid");
-    } else {
-      field.classList.remove("invalid");
-    } }
-    
-  </script>
-      <style>
-        body {font-family: Arial, sans-serif;
-              background-color: #abecb960;
-              padding :  50px}
+function checkEmpty(field) {
+  if (field.value.trim() === "") {
+    field.classList.add("invalid");
+  } else {
+    field.classList.remove("invalid");
+  }
+}
 
-        form {font-family: 'Times New Roman', Times, serif;
-              background-color: #365a3e60;
-              margin : 45px auto;
-              padding : 40px 50px;
-              width : 600px}
+function saveForm(event) {
+  event.preventDefault();
 
-        fieldset {padding : 20px }
-        
-        legend {font-weight:bold}
+  if (!confirm("Are you sure you want to submit this application?")) {
+    return;
+  }
 
-        input:focus,
-        textarea:focus {border: 3px solid #7695fd;
-                        background-color: #99d5ec;
-                        outline : none}
-        
-        .invalid {border: 3px solid rgb(253, 117, 117);
-                  background-color: #ffd6d6;}
-        
-    </style>
+  let selectedType = document.querySelector("input[name='type']:checked");
+
+  let formData = {
+    idno: document.getElementById("idno").value,
+    fName: document.getElementById("fName").value,
+    Bday: document.getElementById("Bday").value,
+    gmail: document.getElementById("gmail").value,
+    no: document.getElementById("no").value,
+    gLevel: document.getElementById("gLevel").value,
+    type: selectedType ? selectedType.value : "",
+    club: document.getElementById("club").value,
+    why: document.getElementById("why").value
+  };
+
+  let signUps = JSON.parse(localStorage.getItem("signUps")) || [];
+  signUps.push(formData);
+  localStorage.setItem("signUps", JSON.stringify(signUps));
+
+
+  window.location.href = "sheet.html";
+}
+
+</script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #abecb960;
+  padding: 50px;
+}
+
+form {
+  font-family: 'Times New Roman', Times, serif;
+  background-color: #365a3e60;
+  margin: 45px auto;
+  padding: 40px 50px;
+  width: 600px;
+}
+
+fieldset {
+  padding: 20px;
+}
+
+legend {
+  font-weight: bold;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border: 3px solid #7695fd;
+  background-color: #99d5ec;
+  outline: none;
+}
+
+.invalid {
+  border: 3px solid rgb(253, 117, 117);
+  background-color: #ffd6d6;
+}
+</style>
+
 </head>
 
 <body>
-    <form method="post" action="submit"
-      onsubmit="return confirmSubmit()"
-      onreset="return confirmReset()">
-      
-    <fieldset>
-        <legend>Personal Information</legend>
-        <label for="idno">Student ID number : </label>
-        <input type="number" id="idno" name="idno" required onblur="checkEmpty(this)"><br>
-        <label for="fName">Full Name : </label>
-        <input type="text" id="fName" name="fName" required onblur="checkEmpty(this)"><br>
-        <label for="Bday">Birthday : </label>
-        <input type="date" id="Bday" name="Bday" required onblur="checkEmpty(this)"><br>
-        <label for="gmail">Email Address : </label>
-        <input type="email" id="gmail" name="gmail" required onblur="checkEmpty(this)"><br>
-    </fieldset>
-    <fieldset>
-        <legend>Application Information</legend>
-        <label for="no">Mobile Number : </label>
-        <input type="text" id="no" name="no" required onblur="checkEmpty(this)"><br>
 
-        <label for="gLevel">Grade Level : </label>
+<form onsubmit="saveForm(event)">
 
-        <select name="gLevel" id="gLevel" required>
-        <option value="se">Grade 7 </option>
-        <option value="ei">Grade 8 </option>
-        <option value="ni">Grade 9 </option>
-        <option value="te">Grade 10 </option>
-        <option value="el">Grade 11 </option>
-        <option value="tv">Grade 12 </option>
-        </select><br>
+<fieldset>
+<legend>Personal Information</legend>
 
-        <legend>Intern/Extern</legend>
-        <input type="radio" id="int" name="type" value="Intern" required>
-        <label for="int">Intern</label><br>
-        <input type="radio" id="ext" name="type" value="Extern" required>
-        <label for="ext">Extern</label><br>
+<label>Student ID number:</label>
+<input type="number" id="idno" required onblur="checkEmpty(this)"><br><br>
 
-        <label for="club">Preferred Organization/Club : </label>
+<label>Full Name:</label>
+<input type="text" id="fName" required onblur="checkEmpty(this)"><br><br>
 
-        <select name="club" id="club" required>
-        <option value="al">Alianti </option>
-        <option value="la">Labuyo </option>
-        <option value="hi">Himig </option>
-        <option value="pa">Palastro </option>
-        <option value="fl">Flux </option>
-        </select><br>
+<label>Birthday:</label>
+<input type="date" id="Bday" required onblur="checkEmpty(this)"><br><br>
 
-        <label for="why">Why do you want to join : </label><br>
+<label>Email Address:</label>
+<input type="email" id="gmail" required onblur="checkEmpty(this)"><br><br>
 
-        <textarea id="why" name="why" rows="5 " cols="67" required  onblur="checkEmpty(this)">
-        
-        </textarea>
-        
-    </fieldset>
+</fieldset>
 
-    <input type="submit" value="Submit">
-    <input type="reset" value="Reset">
-  
-    </form>
-</body> 
+<fieldset>
+<legend>Application Information</legend>
+
+<label>Mobile Number:</label>
+<input type="text" id="no" required onblur="checkEmpty(this)"><br><br>
+
+<label>Grade Level:</label>
+<select id="gLevel" required>
+  <option value="">Select Grade</option>
+  <option value="Grade 7">Grade 7</option>
+  <option value="Grade 8">Grade 8</option>
+  <option value="Grade 9">Grade 9</option>
+  <option value="Grade 10">Grade 10</option>
+  <option value="Grade 11">Grade 11</option>
+  <option value="Grade 12">Grade 12</option>
+</select><br><br>
+
+<legend>Intern / Extern</legend>
+
+<input type="radio" name="type" value="Intern" required> Intern<br>
+<input type="radio" name="type" value="Extern" required> Extern<br><br>
+
+<label>Preferred Organization/Club:</label>
+<select id="club" required>
+  <option value="">Select Club</option>
+  <option value="Alianti">Alianti</option>
+  <option value="Labuyo">Labuyo</option>
+  <option value="Himig">Himig</option>
+  <option value="Palastro">Palastro</option>
+  <option value="Flux">Flux</option>
+</select><br><br>
+
+<label>Why do you want to join:</label><br>
+<textarea id="why" rows="5" cols="67" required onblur="checkEmpty(this)"></textarea>
+
+</fieldset>
+
+<br>
+<input type="submit" value="Submit">
+<input type="reset" value="Reset">
+
+</form>
+
+</body>
 </html>
-
