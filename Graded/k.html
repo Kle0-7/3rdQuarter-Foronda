@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Club Sign-Up Form</title>
+
+<style>
+
+.star {
+  font-size: 30px;
+  color: gray;
+  cursor: pointer;
+}
+
+.star.active {
+  color: gold;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+form {
+  background:#fff;
+  padding:1.5rem;
+  border-radius:8px;
+  box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+label {
+  display:block;
+  margin-bottom:.25rem;
+  font-weight:600;
+}
+
+input, select {
+  width:100%;
+  padding:.5rem;
+  margin-bottom:1rem;
+  border:1px solid #ccc;
+  border-radius:4px;
+}
+
+.button-group button {
+  width:100%;
+  padding:.75rem;
+  background:#007bff;
+  color:#fff;
+  border:none;
+  border-radius:4px;
+  font-size:1rem;
+}
+
+.movie-item {
+  background:#fafafa;
+  padding:.75rem;
+  margin:.5rem 0;
+  border-radius:4px;
+  border:1px solid #ddd;
+}
+
+</style>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>Add A movie</h1>
+
+<form id="signupForm">
+
+<label>
+Title:
+<input id="title" type="text" name="Title" required>
+</label>
+
+<br>
+
+<label>Year:
+<input id="year" type="number" name="year" required>
+</label>
+
+<br>
+
+<label>
+Genre:
+<select id="genre" name="Genre" required>
+<option value="" disabled selected> Select a Genre</option>
+<option value="Action">Action</option>
+<option value="Comedy">Comedy</option>
+<option value="Drama">Drama</option>
+<option value="Horror">Horror</option>
+<option value="Sci-Fi">Sci-Fi</option>
+<option value="Romance">Romance</option>
+</select>
+</label>
+
+<br>
+
+<label for="rating">Rating:</label>
+
+<div class="rating">
+<span class="star" data-value="1">&#9733</span>
+<span class="star" data-value="2">&#9733</span>
+<span class="star" data-value="3">&#9733</span>
+<span class="star" data-value="4">&#9733</span>
+<span class="star" data-value="5">&#9733</span>
+</div>
+
+<div class="button-group">
+<button type="submit">Add movie</button>
+</div>
+
+</form>
+
+<script src="script.js"></script>
+
+<h2>Movie List</h2>
+<div id="movieList"></div>
+
+<script>
+
+const stars = document.querySelectorAll(".star");
+let selectedRating = 0;
+
+stars.forEach((star) => {
+    star.addEventListener("click", function() {
+
+        selectedRating = Number(this.dataset.value);
+
+        stars.forEach((s) => s.classList.remove("active"))
+
+        for (let i = 0; i < selectedRating; i++) {
+            stars[i].classList.add("active");
+        }
+
+    })
+})
+
+function addMovie() {
+
+    const title = document.getElementById("title").value
+    const year = document.getElementById("year").value
+    const genre = document.getElementById("genre").value
+    const rating = selectedRating
+
+    const movie = {
+        title: title,
+        year: year,
+        genre: genre,
+        rating: rating
+    };
+
+    let movies = JSON.parse(localStorage.getItem("movies")) || [];
+
+    movies.push(movie);
+
+    localStorage.setItem("movies", JSON.stringify(movies));
+
+    // clear form and rating
+    document.getElementById("title").value = "";
+    document.getElementById("year").value = "";
+    document.getElementById("genre").selectedIndex = 0;
+
+    selectedRating = 0;
+    stars.forEach(s => s.classList.remove("active"));
+
+    displayMovies();
+}
+
+function displayMovies() {
+
+const movieList = document.getElementById("movieList");
+movieList.innerHTML = "";
+
+let movies = JSON.parse(localStorage.getItem("movies")) || [];
+
+movies.forEach(movie => {
+
+let filledStars = "&#9733;".repeat(movie.rating);
+let emptyStars = "&#9734;".repeat(5 - movie.rating);
+let stars = filledStars + emptyStars;
+
+let movieItem = document.createElement("div");
+movieItem.classList.add("movie-item");
+
+movieItem.innerHTML = `${movie.title} (${movie.year}) - ${movie.genre}, Rating: ${stars}`;
+
+});
+
+}
+
+// hook up form submit handler and initialize list
+const form = document.getElementById("signupForm");
+
+if (form) {
+    form.addEventListener("submit", function(e) {
+        e.preventDefault(); // avoid navigation/post request
+        addMovie();
+    });
+}
+
+displayMovies();
+
+</script>
+
+</body>
+</html>
