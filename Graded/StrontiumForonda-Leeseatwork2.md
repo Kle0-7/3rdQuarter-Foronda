@@ -111,7 +111,7 @@
     -Its relative to its parent so if the parent is on the bottom left and the child element is top: 0 it would be on top of the parent element. If there is no parent, it will become relative to the <body>.
 
     c. How do you differentiate sticky from fixed (you can research on sticky)?
-    - Sticky is a relative element but it will only act like one if its parent container is on teh screen. 
+    - Sticky is a relative element but it will only act like one if its parent container is on the screen. 
 
     d. If you were designing a webpage for a school event, how might you use positioning to highlight important information? Please give concrete examples.
     We could use fixed for a header that includes the navigation buttons to make the webpage more accessible.

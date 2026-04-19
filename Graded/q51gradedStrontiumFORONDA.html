@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Movie Tracker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    margin: 0;
+  }
+
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+
+  form {
+    background: white;
+    padding: 30px 35px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 520px;
+    box-sizing: border-box;
+  }
+
+  label {
+    font-weight: bold;
+    margin-top: 15px;
+  }
+
+  input, select {
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .stars {
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .stars span {
+    font-size: 28px;
+    cursor: pointer;
+    color: lightgray;
+    margin-right: 6px;
+    transition: color 0.2s;
+  }
+
+  .stars .active {
+    color: gold;
+  }
+
+  button {
+    background: #a000c0;
+    color: white;
+    padding: 12px;
+    border: none;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: opacity 0.2s;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  #list {
+    margin-top: 25px;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .movie-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .movie-info {
+    flex-grow: 1;
+  }
+
+  .btn-delete { 
+    background: #f44336; 
+    width: auto; 
+    margin: 0; 
+    padding: 8px 12px; 
+  }
+</style>
+</head>
+
+<body>
+
+<h2>Add A Movie</h2>
+
+<form id="movieForm">
+  <label for="title">Title:</label>
+  <input id="title" required placeholder="Title">
+
+  <label for="year">Year:</label>
+  <input type="number" id="year" required placeholder="20xx">
+
+  <label for="genre">Genre:</label>
+  <select id="genre" required>
+    <option value="">Select a Genre</option>
+    <option>Action</option>
+    <option>Comedy</option>
+    <option>Drama</option>
+    <option>Sci-Fi</option>
+    <option>Horror</option>
+  </select>
+
+  <label>Rating:</label>
+  <div class="stars" >
+    <span>★</span>
+    <span>★</span>
+    <span>★</span>
+    <span>★</span>
+    <span>★</span>
+  </div>
+
+  <button type="submit">Add Movie</button>
+</form>
+
+<h2>Movie List</h2>
+<div id="list"></div>
+
+<script>
+  const stars = document.querySelectorAll(".stars span");
+  const movieForm = document.getElementById("movieForm");
+  let rating = 0;
+
+
+  stars.forEach((star, i) => {
+    star.addEventListener("click", () => {
+      rating = i + 1;
+      updateStars(rating);
+    });
+  });
+
+  function updateStars(val) {
+    stars.forEach((s, j) => s.classList.toggle("active", j < val));
+  }
+
+  
+  movieForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const title = document.getElementById("title").value;
+    const year = document.getElementById("year").value;
+    const genre = document.getElementById("genre").value;
+
+    if (rating === 0) {
+      alert("Please select a star rating!");
+      return;
+    }
+
+    const movies = JSON.parse(localStorage.getItem("movies")) || [];
+    const movieData = { title, year, genre, rating };
+
+    movies.push(movieData);
+    localStorage.setItem("movies", JSON.stringify(movies));
+    
+    // Reset Form
+    movieForm.reset();
+    rating = 0;
+    updateStars(0);
+    showMovies();
+  });
+
+
+  function showMovies() {
+    const movies = JSON.parse(localStorage.getItem("movies")) || [];
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    movies.forEach((m, index) => {
+      list.innerHTML += `
+        <div class="movie-card">
+          <div class="movie-info">
+            <strong>${m.title}</strong> (${m.year})<br>
+            <small>${m.genre}</small> | 
+            <span style="color:gold">${"★".repeat(m.rating)}</span>
+          </div>
+          <button class="btn-delete" onclick="deleteMovie(${index})">Delete</button>
+        </div>
+      `;
+    });
+  }
+
+
+  function deleteMovie(index) {
+    if (confirm("Are you sure you want to delete this movie?")) {
+      let movies = JSON.parse(localStorage.getItem("movies")) || [];
+      movies.splice(index, 1);
+      localStorage.setItem("movies", JSON.stringify(movies));
+      showMovies();
+    }
+  }
+
+
+  showMovies();
+</script>
+
+</body>
+</html>
